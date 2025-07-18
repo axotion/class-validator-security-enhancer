@@ -1,0 +1,40 @@
+{
+  "name": "class-validator-security-enhancer",
+  "version": "1.0.0",
+  "description": "AI-powered security enhancement tool for class-validator DTOs and request objects",
+  "main": "main.ts",
+  "scripts": {
+    "start": "bun run main.ts",
+    "dev": "bun run main.ts"
+  },
+  "keywords": [
+    "class-validator",
+    "security",
+    "dto",
+    "validation",
+    "typescript",
+    "nestjs",
+    "ai",
+    "gemini"
+  ],
+  "author": "axotion",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axotion/class-validator-security-enhancer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/axotion/class-validator-security-enhancer/issues"
+  },
+  "homepage": "https://github.com/axotion/class-validator-security-enhancer#readme",
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^1.2.22",
+    "ai": "^4.3.19"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.14"
+  }
+}
