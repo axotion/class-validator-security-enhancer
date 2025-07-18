@@ -1,6 +1,6 @@
 # Class Validator Security Enhancer
 
-AI-powered security enhancement tool for class-validator DTOs and request objects. This tool automatically scans your TypeScript files and enhances them with robust security validation decorators using Google's Gemini AI.
+AI-powered security enhancement tool for [class-validator](https://github.com/typestack/class-validator). This tool automatically scans your TypeScript files and enhances them with robust security validation decorators using Google's Gemini AI.
 
 ## 🔧 Features
 
