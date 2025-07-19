@@ -1,6 +1,9 @@
 // AI prompt templates for security enhancement
 
-export function createSecurityPrompt(fileName: string, fileContent: string): string {
+export function createSecurityPrompt(
+  fileName: string,
+  fileContent: string,
+): string {
   return `
 File: ${fileName}
 <content>${fileContent}</content>
@@ -42,11 +45,11 @@ userToken: string;
 - Search queries → \`@MaxLength(100)\` + \`@Matches(/^[a-zA-Z0-9\\\\s\\\\-_]+$/)\`
 - Nested objects → \`@ValidateNested()\` + \`@Type(() => NestedClass)\`
 
-### **Required Imports**
+### **Available Imports**
 import {
   IsString, IsNotEmpty, IsUUID, IsEmail, IsOptional, MaxLength, MinLength,
   IsInt, Min, Max, IsArray, ArrayMaxSize, ArrayMinSize, IsEnum, Matches,
-  IsUrl, IsISO8601, IsStrongPassword, Transform, IsMongoId, IsPositive,
+  IsUrl, IsISO8601, IsStrongPassword, IsMongoId, IsPositive,
   IsNumber, NotContains, IsIn, ArrayUnique, IsDefined, Contains,
   IsBoolean, IsDate, Length, IsBooleanString, IsNumberString, IsAlpha,
   IsAlphanumeric, IsAscii, IsBase64, IsCreditCard, IsHexadecimal, IsIP,
@@ -55,6 +58,8 @@ import {
   ValidateNested, ValidateIf, Equals, NotEquals, IsEmpty, MinDate, MaxDate,
   IsNegative, IsDivisibleBy
 } from 'class-validator';
+
+import { Transform } from @claude explain
 
 ## Your Task
 1. **SCAN FOR SECURITY VULNERABILITIES**: Identify ALL token/ID fields and apply UUID validation
