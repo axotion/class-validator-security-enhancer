@@ -1,6 +1,6 @@
 // AI prompt templates for security enhancement
 
-export function createSecurityPrompt(
+export function createSecurityPromptForWayinWithCustomDecorators(
   fileName: string,
   fileContent: string
 ): string {
@@ -29,16 +29,13 @@ To improve consistency and maintainability, we have created custom decorators th
 * \`@IsValidString({ preset: 'name' | 'slug' | 'identifier', minLength?: number, maxLength?: number, optional?: boolean })\`: For validated strings like names, slugs, etc.
 * \`@IsUuidArray({ optional?: boolean, notEmpty?: boolean, maxSize?: number })\`: For arrays of UUIDs.
 * \`@IsPositiveIntArray({ optional?: boolean, notEmpty?: boolean, unique?: boolean, maxSize?: number })\`: For arrays of positive integers.
-* \`@IsValidStringArray({ preset: 'name' | 'slug' | 'identifier', ... })\`: For arrays of validated strings.
-
----
-
-
+* \`@IsValidStringArray({ preset: 'name' | 'slug' | 'identifier', minLength?: number, maxLength?: number, optional?: boolean, notEmpty?: boolean, maxSize?: number })\`: For arrays of validated strings.
 
 ## Critical Security Rules & Examples
 
 ### **1. Token/ID Validation (HIGHEST PRIORITY)**
-NEVER  DO THIS - Vulnerable to injection
+
+// NEVER  DO THIS - Vulnerable to injection
 @IsString()
 userToken: string;
 
@@ -103,7 +100,7 @@ import { IsEmailField, IsStrongPasswordField, IsPositiveInt, IsValidString, IsUu
 
 ## Your Task
 1. **SCAN FOR SECURITY VULNERABILITIES**: Identify ALL token/ID fields and apply UUID validation
-2. **ENHANCE ALL VALIDATIONS**: Add comprehensive security-focused validation to every property
+2. **ENHANCE ALL VALIDATIONS**: Add comprehensive security-focused validation to every property - if possible use our custom decorators to improve consistency and maintainability
 3. **ADD MISSING IMPORTS**: Include all necessary class-validator imports at the top
 4. **APPLY TRANSFORMS**: Add sanitization transforms where appropriate
 5. **RETURN ENHANCED FILE**: Preserve exact file structure with added security validations
