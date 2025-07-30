@@ -1,7 +1,12 @@
 #!/usr/bin/env bun
 
 import { scanDirectory } from "./src/scanner.js";
-import { getCustomPattern, selectModel, askToContinue } from "./src/user-input.js";
+import {
+  getCustomPattern,
+  selectModel,
+  askToContinue,
+  selectPrompt,
+} from "./src/user-input.js";
 import { processFiles } from "./src/processor.js";
 import { calculateCosts } from "./src/cost-calculator.js";
 import type { FileInfo } from "./src/types.js";
@@ -21,6 +26,7 @@ async function main(): Promise<void> {
     // Get user preferences
     const customPattern = await getCustomPattern();
     const selectedModel = await selectModel();
+    const { name: promptName, creator: promptCreator } = await selectPrompt();
 
     console.log(`\nScanning for @ApiProperty() decorators in: ${targetDir}`);
     console.log(`Using model: ${selectedModel}`);
@@ -29,7 +35,9 @@ async function main(): Promise<void> {
     if (customPattern) {
       console.log(`Filtering: Files containing '${customPattern}' in filename`);
     } else {
-      console.log(`Filtering: Files must contain 'request.ts' or 'dto.ts' in filename`);
+      console.log(
+        `Filtering: Files must contain 'request.ts' or 'dto.ts' in filename`
+      );
     }
 
     console.log("═".repeat(60));
@@ -48,11 +56,15 @@ async function main(): Promise<void> {
     const costs = calculateCosts(totalChars, selectedModel);
 
     // Display results
-    console.log(`\n✅ Found ${files.length} files with @ApiProperty() decorator`);
+    console.log(
+      `\n✅ Found ${files.length} files with @ApiProperty() decorator`
+    );
     console.log("\n📊 Token Estimation:");
     console.log(`   • Total characters: ${totalChars.toLocaleString()}`);
     console.log(`   • Input tokens: ${costs.inputTokens.toLocaleString()}`);
-    console.log(`   • Output tokens (80%): ${costs.outputTokens.toLocaleString()}`);
+    console.log(
+      `   • Output tokens (80%): ${costs.outputTokens.toLocaleString()}`
+    );
     console.log(`   • Total tokens: ${costs.totalTokens.toLocaleString()}`);
 
     console.log(`\n💰 ${selectedModel} Pricing:`);
@@ -80,22 +92,27 @@ async function main(): Promise<void> {
 
     // Show processing start
     console.log("\n✅ Continuing with next step...");
-    console.log("\n🔄 Will modify original files in place for pull request compatibility");
-    console.log(`\n🤖 Processing files with ${selectedModel}...\n`);
+    console.log(
+      "\n🔄 Will modify original files in place for pull request compatibility"
+    );
+    console.log(
+      `\n🤖 Processing files with ${selectedModel} and ${promptName}...\n`
+    );
 
     // Process all files
-    const results = await processFiles(files, selectedModel);
+    const results = await processFiles(files, selectedModel, promptCreator);
 
     // Show final results
-    const successful = results.filter(r => r.success).length;
-    const failed = results.filter(r => !r.success).length;
+    const successful = results.filter((r) => r.success).length;
+    const failed = results.filter((r) => !r.success).length;
 
-    console.log(`\n✅ Processing complete! ${successful} files enhanced successfully.`);
+    console.log(
+      `\n✅ Processing complete! ${successful} files enhanced successfully.`
+    );
 
     if (failed > 0) {
       console.log(`❌ ${failed} files failed to process.`);
     }
-
   } catch (error) {
     console.error(
       "\n❌ Error:",
