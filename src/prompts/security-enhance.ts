@@ -9,7 +9,7 @@ export function createSecurityPrompt(
   const systemPrompt = `Analyze TypeScript DTO files and enhance them with intelligent, security-focused validation decorators
 
 <prompt_objective>
-Transform TypeScript DTO files by adding security-focused validation decorators based on field names and types, replacing existing validators while preserving custom business logic decorators.
+Transform TypeScript DTO file by adding security-focused validation decorators based on field names and types, replacing existing validators while preserving custom business logic decorators, and return reason and enhanced file.
 </prompt_objective>
 
 <prompt_rules>
@@ -20,7 +20,7 @@ Transform TypeScript DTO files by adding security-focused validation decorators 
 - PRESERVE all custom decorators (non class-validator/transformer ones like @TransformNullToMaxDate)
 - REPLACE all class-validator/transformer decorators with security-enhanced versions
 - RESPECT original property types - if string add string validation, if number add number validation
-- ADD security comment after each validator explaining the security reason
+- DO NOT add comments after decorators - keep code clean
 - ENHANCE all @ApiProperty decorators with security-aware descriptions and examples
 - HANDLE nested DTOs and arrays with proper validation
 - DETECT enum fields and add @IsEnum() validation
@@ -105,6 +105,11 @@ export class AuthDto {
 \`\`\`
 
 AI:
+/*
+ * Security Enhancement Summary:
+ * - Replaced @IsString() with @IsUUID(4) for userToken and sessionId to prevent injection attacks
+ * - Enhanced @ApiProperty with security-aware descriptions and examples
+ */
 import { IsUUID, ApiProperty } from 'class-validator';
 
 export class AuthDto {
@@ -112,14 +117,14 @@ export class AuthDto {
     description: 'User authentication token - UUID v4 format required for security',
     example: '123e4567-e89b-12d3-a456-426614174000'
   })
-  @IsUUID(4) // Security: Prevents injection attacks
+  @IsUUID(4)
   userToken: string;
   
   @ApiProperty({
     description: 'Session identifier - UUID v4 format required',
     example: '987fcdeb-51a2-43d1-9876-543210fedcba'
   })
-  @IsUUID(4) // Security: Prevents injection attacks
+  @IsUUID(4)
   sessionId: string;
 }
 
@@ -137,6 +142,13 @@ export class UserDto {
 \`\`\`
 
 AI:
+/*
+ * Security Enhancement Summary:
+ * - Added secure @Matches patterns for firstName and description to prevent injection attacks
+ * - Replaced @IsString() with numeric validation pattern for age field
+ * - Added length constraints to prevent DoS attacks
+ * - Enhanced @ApiProperty with security-aware descriptions
+ */
 import { Matches, Length, MaxLength, ApiProperty } from 'class-validator';
 
 export class UserDto {
@@ -146,7 +158,7 @@ export class UserDto {
   })
   @Matches(/^[a-zA-Z\\u0080-\\uFFFF\\s'-]+$/, {
     message: 'Name can only contain letters, spaces, hyphens, and apostrophes'
-  }) // Security: Prevent code injection, blocks () [] {} etc
+  })
   @Length(2, 50)
   firstName: string;
   
@@ -156,9 +168,9 @@ export class UserDto {
   })
   @Matches(/^[0-9]+$/, {
     message: 'Age must contain only numbers'
-  }) // Security: Numeric string validation
+  })
   @Length(1, 3)
-  age: string; // ALERT: age as string is unusual - consider using number type
+  age: string;
   
   @ApiProperty({
     description: 'User profile description',
@@ -166,8 +178,8 @@ export class UserDto {
   })
   @Matches(/^[a-zA-Z0-9\\u0080-\\uFFFF\\s.,!?'_-]+$/, {
     message: 'Field can contain letters, numbers, spaces, and basic punctuation (.,!?\\'_-)'
-  }) // Security: Prevent code injection, blocks () [] {} <> etc
-  @MaxLength(1000) // Security: Prevent memory exhaustion
+  })
+  @MaxLength(1000)
   description: string;
 }
 
@@ -188,6 +200,12 @@ export class BookingDto {
 \`\`\`
 
 AI:
+/*
+ * Security Enhancement Summary:
+ * - Preserved custom @TransformNullToMaxDate() decorator and enhanced with @IsISO8601 validation
+ * - Replaced @IsString() with @IsUUID(4) for companyId to prevent injection attacks
+ * - Enhanced @ApiProperty with security-aware descriptions
+ */
 import { IsUUID, IsISO8601, ApiProperty } from 'class-validator';
 import { TransformNullToMaxDate } from '@company/decorators';
 
@@ -197,14 +215,14 @@ export class BookingDto {
     example: '2024-12-31T23:59:59Z'
   })
   @TransformNullToMaxDate()
-  @IsISO8601({ strict: true }) // Security: Ensures valid date format
+  @IsISO8601({ strict: true })
   expiryDate: string;
   
   @ApiProperty({
     description: 'Company identifier - UUID v4 format required',
     example: '987fcdeb-51a2-43d1-9876-543210fedcba'
   })
-  @IsUUID(4) // Security: Prevents injection attacks
+  @IsUUID(4)
   companyId: string;
 }
 
@@ -229,6 +247,14 @@ export class ContactDto {
 \`\`\`
 
 AI:
+/*
+ * Security Enhancement Summary:
+ * - Removed redundant @IsNotEmpty() since @IsEmail() already validates non-empty
+ * - Added secure @Matches pattern for message field to prevent injection attacks
+ * - Replaced @IsString() with @IsPhoneNumber() for phone validation
+ * - Added length constraints to prevent DoS attacks
+ * - Enhanced @ApiProperty with security-aware descriptions
+ */
 import { IsEmail, Matches, MaxLength, MinLength, IsOptional, IsPhoneNumber, ApiProperty } from 'class-validator';
 
 export class ContactDto {
@@ -236,7 +262,7 @@ export class ContactDto {
     description: 'Contact email address',
     example: 'contact@example.com'
   })
-  @IsEmail() // Security: Ensures valid email format (already validates non-empty)
+  @IsEmail()
   @MaxLength(255)
   email: string;
   
@@ -246,9 +272,9 @@ export class ContactDto {
   })
   @Matches(/^[a-zA-Z0-9\\u0080-\\uFFFF\\s.,!?'_-]+$/, {
     message: 'Field can contain letters, numbers, spaces, and basic punctuation (.,!?\\'_-)'
-  }) // Security: Prevent code injection
+  })
   @MinLength(2)
-  @MaxLength(1000) // Security: Prevent memory exhaustion
+  @MaxLength(1000)
   message: string;
   
   @ApiProperty({
@@ -257,7 +283,7 @@ export class ContactDto {
     required: false
   })
   @IsOptional()
-  @IsPhoneNumber(null) // Security: Validates phone format (auto-detects country)
+  @IsPhoneNumber(null)
   phone?: string;
 }
 
@@ -275,6 +301,13 @@ export class PaymentDto {
 \`\`\`
 
 AI:
+/*
+ * Security Enhancement Summary:
+ * - Replaced @IsString() with @IsUUID(4) for paymentToken and customerId to prevent injection attacks
+ * - Added proper number validation with decimal places constraint for amount field
+ * - Added Min/Max constraints to prevent negative amounts and unrealistic values
+ * - Enhanced @ApiProperty with security-aware descriptions and examples
+ */
 import { IsUUID, IsNumber, Min, Max, ApiProperty } from 'class-validator';
 
 export class PaymentDto {
@@ -282,7 +315,7 @@ export class PaymentDto {
     description: 'Payment token - UUID v4 format required for security',
     example: '123e4567-e89b-12d3-a456-426614174000'
   })
-  @IsUUID(4) // Security: Prevents injection attacks
+  @IsUUID(4)
   paymentToken: string;
   
   @ApiProperty({
@@ -291,21 +324,31 @@ export class PaymentDto {
     minimum: 0,
     maximum: 999999.99
   })
-  @IsNumber({ maxDecimalPlaces: 2 }) // Security: Ensures proper number format
-  @Min(0) // Security: Prevents negative amounts
-  @Max(999999.99) // Security: Prevents unrealistic amounts
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @Max(999999.99)
   amount: number;
   
   @ApiProperty({
     description: 'Customer identifier - UUID v4 format required',
     example: '987fcdeb-51a2-43d1-9876-543210fedcba'
   })
-  @IsUUID(4) // Security: Prevents injection attacks
+  @IsUUID(4)
   customerId: string;
 }
 </prompt_examples>
 
-Ready to analyze and enhance this TypeScript DTO with security-focused validation.`;
+OUTPUT REQUIREMENTS:
+- Return the complete enhanced TypeScript file content
+- Add a comment block at the very beginning of the file explaining what security enhancements were made
+- Use this format for the comment block:
+/*
+ * Security Enhancement Summary:
+ * - Brief explanation of changes made
+ * - List specific improvements
+ */
+- Include all necessary imports
+- Don't add markdown backticks around the code`;
 
   const userPrompt = `<file>${fileName}</file> <content>${fileContent}</content>`;
 

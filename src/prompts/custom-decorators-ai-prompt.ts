@@ -104,10 +104,17 @@ import { IsEmailField, IsStrongPasswordField, IsPositiveInt, IsValidString, IsUu
 5. **RETURN ENHANCED FILE**: Preserve exact file structure with added security validations
 
 **CRITICAL OUTPUT FORMAT REQUIREMENTS:**
+- Return the complete enhanced TypeScript file content
+- Add a comment block at the very beginning of the file explaining what security enhancements were made
+- Use this format for the comment block:
+/*
+ * Security Enhancement Summary:
+ * - Brief explanation of changes made
+ * - List specific improvements
+ */
 - Return ONLY the raw TypeScript code
 - DO NOT wrap the response in \`\`\`typescript code blocks
 - DO NOT add any explanatory text before or after the code
-- Do NOT add any comments to the code
 - Return the complete file content as plain text that can be directly written to a .ts file
 - Preserve exact formatting, spacing, and structure of the original file
 
