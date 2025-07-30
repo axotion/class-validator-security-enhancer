@@ -46,4 +46,9 @@ export const DEFAULT_MODEL: ModelName = "gemini-2.5-flash";
 // Token estimation: ~1 token per 4 characters
 export const CHARS_PER_TOKEN = 4;
 
-export type PromptCreator = (fileName: string, fileContent: string) => string;
+export interface SecurityPrompt {
+  system: string;
+  user: string;
+}
+
+export type PromptCreator = (fileName: string, fileContent: string) => SecurityPrompt;

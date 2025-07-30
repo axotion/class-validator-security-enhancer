@@ -1,7 +1,8 @@
 import { writeFile } from "fs/promises";
 import { basename } from "path";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { generateText } from "ai";
+import { generateObject } from "ai";
+import { z } from "zod";
 import type {
   FileInfo,
   ModelName,
@@ -39,13 +40,25 @@ export async function processFiles(
     try {
       const prompt = createPrompt(fileName, file.content);
 
-      const { text } = await generateText({
+      const { object } = await generateObject<{
+        reason: string;
+        enhancedFile: string;
+      }>({
         model: google(model),
-        prompt: prompt,
+        system: prompt.system,
+        messages: [
+          { role: 'user', content: prompt.user }
+        ],
+        schema: z.object({
+          reason: z.string(),
+          enhancedFile: z.string(),
+        }),
+        temperature: 0.3,
       });
 
-      await writeFile(file.path, text);
+      await writeFile(file.path, object.enhancedFile);
       console.log(`   ✅ Modified: ${file.path}`);
+      console.log(`      Reason: ${object.reason}`);
       results.push({ success: true, filePath: file.path });
     } catch (error) {
       const errorMessage =

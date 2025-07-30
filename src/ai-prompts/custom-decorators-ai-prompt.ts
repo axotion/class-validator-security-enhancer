@@ -1,14 +1,12 @@
 // AI prompt templates for security enhancement
 
+import type { SecurityPrompt } from "../types.js";
+
 export function createSecurityPromptWithCustomDecorators(
   fileName: string,
   fileContent: string
-): string {
-  return `
-File: ${fileName}
-<content>${fileContent}</content>
-
-**CRITICAL SECURITY ALERT**: We had a serious incident where someone passed a SQL function as \`userToken\` because validation was only \`@IsString()\` and nearly hacked us!
+): SecurityPrompt {
+  const systemPrompt = `**CRITICAL SECURITY ALERT**: We had a serious incident where someone passed a SQL function as \`userToken\` because validation was only \`@IsString()\` and nearly hacked us!
 
 You are a security-focused TypeScript code analyzer. Your task is to analyze the provided TypeScript request/DTO file and enhance it with proper validation decorators for security and data integrity.
 
@@ -113,6 +111,13 @@ import { IsEmailField, IsStrongPasswordField, IsPositiveInt, IsValidString, IsUu
 - Return the complete file content as plain text that can be directly written to a .ts file
 - Preserve exact formatting, spacing, and structure of the original file
 
-**Remember**: The \`userToken\` incident shows why content validation is critical - type validation alone is not enough!
-`;
+**Remember**: The \`userToken\` incident shows why content validation is critical - type validation alone is not enough!`;
+
+  const userPrompt = `File: ${fileName}
+<content>${fileContent}</content>`;
+
+  return {
+    system: systemPrompt,
+    user: userPrompt
+  };
 }

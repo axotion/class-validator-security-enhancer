@@ -1,7 +1,7 @@
 import readline from "readline";
 import type { ModelName, PromptCreator } from "./types.js";
 import { MODELS, DEFAULT_MODEL } from "./types.js";
-import { createSecurityPrompt } from "./ai-prompts/ai-prompt.js";
+import { createSecurityPrompt } from "./ai-prompts/security-enhance.js";
 import { createSecurityPromptWithCustomDecorators } from "./ai-prompts/custom-decorators-ai-prompt.js";
 
 const AVAILABLE_PROMPTS = {
