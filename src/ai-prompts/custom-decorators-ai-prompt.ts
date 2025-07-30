@@ -1,6 +1,6 @@
 // AI prompt templates for security enhancement
 
-export function createSecurityPromptForWayinWithCustomDecorators(
+export function createSecurityPromptWithCustomDecorators(
   fileName: string,
   fileContent: string
 ): string {
