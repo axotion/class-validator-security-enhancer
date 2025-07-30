@@ -2,7 +2,7 @@
 
 import type { SecurityPrompt } from "../types.js";
 
-export function createSecurityPrompt(
+export function createNestJSStandardPrompt(
   fileName: string,
   fileContent: string,
 ): SecurityPrompt {

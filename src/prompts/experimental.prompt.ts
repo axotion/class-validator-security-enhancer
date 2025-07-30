@@ -2,7 +2,7 @@
 
 import type { SecurityPrompt } from "../types.js";
 
-export function createSecurityPromptWithCustomDecorators(
+export function createExperimentalPrompt(
   fileName: string,
   fileContent: string
 ): SecurityPrompt {

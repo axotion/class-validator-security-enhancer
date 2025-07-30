@@ -1,12 +1,12 @@
 import readline from "readline";
 import type { ModelName, PromptCreator } from "./types.js";
 import { MODELS, DEFAULT_MODEL } from "./types.js";
-import { createSecurityPrompt } from "./prompts/security-enhance.js";
-import { createSecurityPromptWithCustomDecorators } from "./prompts/custom-decorators-ai-prompt.js";
+import { createNestJSStandardPrompt } from "./prompts/nestjs-standard-enhance.prompt.js";
+import { createExperimentalPrompt } from "./prompts/experimental.prompt.js";
 
 const AVAILABLE_PROMPTS = {
-  "Security Enhancement": createSecurityPrompt,
-  "Custom Decorators": createSecurityPromptWithCustomDecorators,
+  "NestJS Standard Enhancement": createNestJSStandardPrompt,
+  "NestJS Experimental": createExperimentalPrompt,
 };
 
 function createReadlineInterface() {
